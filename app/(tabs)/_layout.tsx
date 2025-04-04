@@ -7,18 +7,18 @@ const Layout = () => {
     <Tabs>
       <Tabs.Screen
         name="index"
-        options={{ 
-          title: "Główna", 
+        options={{
+          title: "Główna",
           headerShown: false,
           tabBarIcon: ({ size, color }) => (
-            <Feather name="home" size={size} color={color} /> 
+            <Feather name="home" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="battery"
-        options={{ 
-          title: "Bateria", 
+        options={{
+          title: "Bateria",
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
@@ -31,8 +31,8 @@ const Layout = () => {
       />
       <Tabs.Screen
         name="network"
-        options={{ 
-          title: "Sieć", 
+        options={{
+          title: "Sieć",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Feather name="wifi" size={size} color={color} />
@@ -40,12 +40,26 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="onas"
-        options={{ 
-          title: "O nas", 
+        name="weather"
+        options={{
+          title: "Pogoda",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-outline" size={size} color={color} />
+            <Ionicons name="sunny" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="onas"
+        options={{
+          title: "O nas",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons
+              name="information-circle-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
