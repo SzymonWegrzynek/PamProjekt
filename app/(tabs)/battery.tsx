@@ -33,7 +33,7 @@ const BatteryStatus = () => {
   return (
     <>
       <View>
-        <Text className="text-center text-black font-bold text-4xl mt-5">
+        <Text className="text-center text-black font-bold text-4xl mt-20 font-lexend">
           Bateria
         </Text>
       </View>

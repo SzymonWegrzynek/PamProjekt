@@ -6,7 +6,7 @@ const onas = () => {
   return (
     <View>
       <View>
-        <Text className="text-center text-black font-bold text-4xl mt-5">
+        <Text className="text-center text-black font-bold text-4xl mt-20">
           O nas
         </Text>
       </View>
@@ -26,5 +26,3 @@ const onas = () => {
 };
 
 export default onas;
-
-const styles = StyleSheet.create({});
