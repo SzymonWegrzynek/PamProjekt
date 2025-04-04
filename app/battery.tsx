@@ -35,23 +35,34 @@ const BatteryStatus = () => {
   const batteryStatusText = getBatteryStatusText();
 
   return (
-    <View style={{ backgroundColor: '#0a0908', width: '90%', borderRadius: 10, height: 100, alignSelf: 'center' }}>
-      <Text style={{ color: '#fffcf2', fontWeight: 'bold', fontSize: 28, marginLeft: 5 }}>Bateria</Text>
-
-      <Text style={{ color: '#fffcf2', marginLeft: 5 }}>
-        Poziom baterii:{" "}
-        <Text style={{ fontWeight: 'bold' }}>
-          {batteryLevel !== null ? `${(batteryLevel * 100).toFixed(0)}%` : "Ładowanie..."}
-        </Text>
-      </Text>
-
-      <Text style={{ color: '#fffcf2', marginLeft: 5 }}>
-        Stan baterii:{" "}
-        <Text style={{ fontWeight: 'bold', color: getStatusColor(batteryStatusText) }}>
-          {batteryStatusText}
-        </Text>
+  <>
+    <View>
+      <Text className="text-center text-black font-bold text-4xl mt-5">
+        Bateria
       </Text>
     </View>
+  
+    <View className="flex flex-row justify-center gap-2 mt-5">
+      <View className="flex flex-col bg-[#0a0908] w-[30%] rounded-xl h-24 self-center py-2">
+        <Text className="text-[#fffcf2] text-center">
+          Poziom baterii
+        </Text>
+        <Text className="font-bold text-center text-[#fffcf2] text-5xl mt-3">
+          {batteryLevel !== null ? `${(batteryLevel * 100).toFixed(0)}%` : "Ładowanie..."}
+        </Text>
+      </View>
+
+      <View className="flex flex-col bg-[#0a0908] w-[60%] rounded-xl h-24 self-center py-2">
+        <Text className="ml-2 text-[#fffcf2]">
+          Stan baterii
+        </Text>  
+        <Text className="font-bold ml-2 text-4xl mt-3" style={{ color: getStatusColor(batteryStatusText) }}>
+          {batteryStatusText}
+        </Text>    
+      </View>
+    </View>
+  </>
+
   );
 };
 

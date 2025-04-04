@@ -4,12 +4,16 @@ import { Link } from "expo-router";
 
 const About = () => {
     return (
-        <View className="h-40 flex flex-col justify-between items-center">
-            <Text className="font-bold color-black text-5xl mt-5">About</Text>
-            <Link href="https://github.com/Aleksy27">Aleksander Piotrowski</Link>
-            <Link href="https://github.com/SzymonWegrzynek">Szymon Węgrzynek</Link>
-            <Link href="https://github.com/Kajakkkkkk">Kajetan Deja</Link>
+    <>
+        <View>
+            <Text className="text-center text-black font-bold text-4xl mt-5">O nas</Text>
         </View>
+        <View className="flex flex-col justify-between items-center h-3xl">            
+            <Link className="text-2xl" href="https://github.com/Aleksy27">Aleksander Piotrowski</Link>
+            <Link className="text-2xl" href="https://github.com/SzymonWegrzynek">Szymon Węgrzynek</Link>
+            <Link className="text-2xl" href="https://github.com/Kajakkkkkk">Kajetan Deja</Link>
+        </View>
+    </>        
     );
 };
 
