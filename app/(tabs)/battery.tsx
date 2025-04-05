@@ -1,19 +1,57 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { useBatteryLevel, useBatteryState, BatteryState } from "expo-battery";
+import * as Battery from "expo-battery";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BatteryStatus = () => {
   const batteryLevel = useBatteryLevel();
   const batteryState = useBatteryState();
+  const [logs, setLogs] = useState<string[]>([]);
 
   const getBatteryStatus = () => {
     if (batteryLevel === null || batteryState === null) return "Wczytywanie";
-    if (batteryLevel >= 0.99) return "Pełna bateria";
+    if (batteryLevel >= 0.99) return "Bateria naładowana";
     if (batteryState === BatteryState.CHARGING) return "Ładowanie";
     return "Wyładowywanie";
   };
 
   const batteryStatus = getBatteryStatus();
+
+  const getCurrentLogs = async () => {
+    return JSON.parse((await AsyncStorage.getItem("batteryLogs")) || "[]");
+  };
+
+  const saveLog = async (entry: string) => {
+    const currentLogs = await getCurrentLogs();
+    const updated = [entry, ...currentLogs];
+    await AsyncStorage.setItem("batteryLogs", JSON.stringify(updated));
+    setLogs(updated);
+  };
+
+  const loadLogs = async () => {
+    const saved = await getCurrentLogs();
+    setLogs(saved);
+  };
+
+  useEffect(() => {
+    loadLogs();
+
+    const chargingListener = Battery.addBatteryStateListener(
+      (event: Battery.BatteryStateEvent) => {
+        const state = event.batteryState;
+        let status = "Nieznany";
+        if (state === BatteryState.CHARGING) status = "Podłączono ładowarkę";
+        if (state === BatteryState.UNPLUGGED) status = "Odłączono ładowarkę";
+        if (state === BatteryState.FULL) status = "Bateria naładowana";
+
+        const logEntry = `${new Date().toLocaleString()} - ${status}`;
+        saveLog(logEntry);
+      }
+    );
+
+    return () => chargingListener.remove();
+  }, []);
 
   return (
     <View className="p-4 bg-[#000] h-full pt-20">
@@ -38,13 +76,22 @@ const BatteryStatus = () => {
                 ? "text-green-500"
                 : batteryStatus === "Wyładowywanie"
                 ? "text-red-500"
-                : batteryStatus === "Pełna bateria"
+                : batteryStatus === "Bateria naładowana"
                 ? "text-green-500"
                 : "text-white"
             }`}
           >
             {batteryStatus}
           </Text>
+        </View>
+
+        <View className="bg-[#222] rounded-xl p-4 w-full">
+          <Text className="text-white text-lg">Historia ładowania</Text>
+          {logs.map((log, index) => (
+            <Text key={index} className="text-white text-lg font-medium mt-1">
+              {log}
+            </Text>
+          ))}
         </View>
       </View>
     </View>

@@ -49,6 +49,16 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
+        name="weather"
+        options={{
+          title: "Pogoda",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="sunny" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="onas"
         options={{
           title: "O nas",

@@ -1,6 +1,7 @@
+import React from "react";
 import { Text, View } from "react-native";
 
-export default function Index() {
+const Index = () => {
   return (
     <View className="p-4 bg-[#000] h-full pt-20">
       <Text className="text-white text-3xl font-bold text-center">Witamy!</Text>
@@ -11,4 +12,6 @@ export default function Index() {
       </View>
     </View>
   );
-}
+};
+
+export default Index;
