@@ -73,22 +73,45 @@ export default function WeatherApp() {
 
   return (
     <ScrollView>
-      <Text>Pogoda</Text>
+      <Text className="text-center text-black font-bold text-4xl mt-20 font-lexend">
+        Pogoda
+      </Text>
 
-      <TextInput
-        placeholder="Wpisz miasto..."
-        value={city}
-        onChangeText={setCity}
-      />
-      <Button title="Szukaj" onPress={() => fetchWeather(city)} />
+      <View className="flex flex-row justify-center gap-2 mt-5">
+        <TextInput
+          className="w-[60%] border-2 border-black rounded-lg p-2"
+          placeholder="Wpisz miasto..."
+          value={city}
+          onChangeText={setCity}
+        />
+        <Button 
+          color="black"
+          title="Szukaj" onPress={() => fetchWeather(city)} 
+        />
+      </View>      
 
       {weather && (
-        <View>
-          <Text>{city}</Text>
-          <Text>Temperatura: {weather.temp_c}°C</Text>
-          <Text>Wilgotność: {weather.humidity}%</Text>
-          <Text>Wiatr: {weather.wind_kph} km/h</Text>
-          <Text>Opis: {weather.condition.text}</Text>
+        <View className="self-center bg-[#0a0908] w-[90%] rounded-lg m-5 ">
+          <Text className="text-[#fffcf2] text-center text-3xl font-bold p-2">{city}</Text>
+          <View className="self-center h-[1px] bg-[#fffcf2] w-[90%]" />
+          <View className="flex-row flex-wrap justify-center p-2 gap-5">
+            <View className="flex flex-col">
+              <Text className="text-[#fffcf2] text-center text-xl mb-1">Temperatura</Text>
+              <Text className="font-bold text-center text-3xl text-[#fffcf2]">{weather.temp_c}°C</Text>
+            </View>
+            <View className="flex flex-col">
+              <Text className="text-[#fffcf2] text-center text-xl mb-1">Wilgotność</Text>
+              <Text className="font-bold text-center text-3xl text-[#fffcf2]">{weather.humidity}%</Text>
+            </View>
+            <View className="flex flex-col">
+              <Text className="text-[#fffcf2] text-center text-xl mb-1">Wiatr</Text>
+              <Text className="font-bold text-center text-3xl text-[#fffcf2]">{weather.wind_kph} km/h</Text>
+            </View>
+            <View className="flex flex-col">
+              <Text className="text-[#fffcf2] text-center text-xl mb-1">Opis</Text>
+              <Text className="font-bold text-center text-3xl text-[#fffcf2]">{weather.condition.text}</Text>
+            </View>            
+          </View>          
         </View>
       )}
 
