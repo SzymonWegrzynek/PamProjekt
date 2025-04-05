@@ -9,43 +9,28 @@ const BatteryStatus = () => {
   const batteryState = useBatteryState();
   const [logs, setLogs] = useState<string[]>([]);
 
-  const getBatteryStatusText = () => {
-    if (batteryLevel === null || batteryState === null)
-      return "Pobieranie danych...";
-
-    if (batteryLevel >= 0.99) return "Pełna bateria";
+  const getBatteryStatus = () => {
+    if (batteryLevel === null || batteryState === null) return "Wczytywanie";
+    if (batteryLevel >= 0.99) return "Bateria naładowana";
     if (batteryState === BatteryState.CHARGING) return "Ładowanie";
-    return "Rozładowywanie";
+    return "Wyładowywanie";
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Ładowanie":
-        return "#2dc653";
-      case "Rozładowywanie":
-        return "red";
-      case "Pełna bateria":
-        return "#2dc653";
-      default:
-        return "#fffcf2";
-    }
-  };
+  const batteryStatus = getBatteryStatus();
 
-  const batteryStatusText = getBatteryStatusText();
+  const getCurrentLogs = async () => {
+    return JSON.parse((await AsyncStorage.getItem("batteryLogs")) || "[]");
+  };
 
   const saveLog = async (entry: string) => {
-    const currentLogs = JSON.parse(
-      (await AsyncStorage.getItem("batteryLogs")) || "[]"
-    );
-    const updated = [entry, ...currentLogs].slice(0, 30);
+    const currentLogs = await getCurrentLogs();
+    const updated = [entry, ...currentLogs];
     await AsyncStorage.setItem("batteryLogs", JSON.stringify(updated));
     setLogs(updated);
   };
 
   const loadLogs = async () => {
-    const saved = JSON.parse(
-      (await AsyncStorage.getItem("batteryLogs")) || "[]"
-    );
+    const saved = await getCurrentLogs();
     setLogs(saved);
   };
 
@@ -56,9 +41,9 @@ const BatteryStatus = () => {
       (event: Battery.BatteryStateEvent) => {
         const state = event.batteryState;
         let status = "Nieznany";
-        if (state === BatteryState.CHARGING) status = "Podłączono do ładowarki";
-        if (state === BatteryState.UNPLUGGED) status = "Odłączono od ładowarki";
-        if (state === BatteryState.FULL) status = "Bateria pełna";
+        if (state === BatteryState.CHARGING) status = "Podłączono ładowarkę";
+        if (state === BatteryState.UNPLUGGED) status = "Odłączono ładowarkę";
+        if (state === BatteryState.FULL) status = "Bateria naładowana";
 
         const logEntry = `${new Date().toLocaleString()} - ${status}`;
         saveLog(logEntry);
@@ -69,41 +54,47 @@ const BatteryStatus = () => {
   }, []);
 
   return (
-    <>
-      <View>
-        <Text className="text-center text-black font-bold text-4xl mt-20 font-lexend">
-          Bateria
-        </Text>
-      </View>
-      <View className="flex flex-row justify-center gap-2 mt-5">
-        <View className="flex flex-col bg-[#0a0908] w-[30%] rounded-xl h-24 self-center py-2">
-          <Text className="text-[#fffcf2] text-center">Poziom baterii</Text>
-          <Text className="font-bold text-center text-[#fffcf2] text-5xl mt-3">
+    <View className="p-4 bg-[#000] h-full pt-20">
+      <Text className="text-white text-3xl font-bold mb-10 text-center">
+        Bateria
+      </Text>
+      <View className="flex flex-row flex-wrap justify-between gap-4">
+        <View className="bg-[#222] rounded-xl p-4 w-[36%]">
+          <Text className="text-white text-lg">Poziom baterii</Text>
+          <Text className="text-white text-2xl font-bold text-center mt-1">
             {batteryLevel !== null
-              ? `${(batteryLevel * 100).toFixed(0)}%`
-              : "Ładowanie..."}
+              ? `${(batteryLevel * 100).toFixed()}%`
+              : "?%"}
           </Text>
         </View>
-        <View className="flex flex-col bg-[#0a0908] w-[60%] rounded-xl h-24 self-center py-2">
-          <Text className="ml-2 text-[#fffcf2]">Stan baterii</Text>
+
+        <View className="bg-[#222] rounded-xl p-4 w-[60%]">
+          <Text className="text-white text-lg">Stan baterii</Text>
           <Text
-            className="font-bold ml-2 text-4xl mt-3"
-            style={{ color: getStatusColor(batteryStatusText) }}
+            className={`text-2xl font-bold mt-1 ${
+              batteryStatus === "Ładowanie"
+                ? "text-green-500"
+                : batteryStatus === "Wyładowywanie"
+                ? "text-red-500"
+                : batteryStatus === "Bateria naładowana"
+                ? "text-green-500"
+                : "text-white"
+            }`}
           >
-            {batteryStatusText}
+            {batteryStatus}
           </Text>
+        </View>
+
+        <View className="bg-[#222] rounded-xl p-4 w-full">
+          <Text className="text-white text-lg">Historia ładowania</Text>
+          {logs.map((log, index) => (
+            <Text key={index} className="text-white text-lg font-medium mt-1">
+              {log}
+            </Text>
+          ))}
         </View>
       </View>
-
-      <ScrollView className="">
-        <Text className="text-center">Logi ładowania</Text>
-        {logs.map((log, index) => (
-          <Text key={index} className="text-center">
-            {log}
-          </Text>
-        ))}
-      </ScrollView>
-    </>
+    </View>
   );
 };
 

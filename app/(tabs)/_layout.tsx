@@ -4,7 +4,16 @@ import { Ionicons, Feather } from "@expo/vector-icons";
 
 const Layout = () => {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#fff",
+        tabBarInactiveTintColor: "#8e8e8e",
+        tabBarStyle: {
+          backgroundColor: "#000",
+          borderTopColor: "transparent",
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

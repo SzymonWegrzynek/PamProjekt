@@ -72,44 +72,91 @@ export default function WeatherApp() {
   }, []);
 
   return (
-    <ScrollView>
-      <Text>Pogoda</Text>
-
-      <TextInput
-        placeholder="Wpisz miasto..."
-        value={city}
-        onChangeText={setCity}
-      />
-      <Button title="Szukaj" onPress={() => fetchWeather(city)} />
-
-      {weather && (
-        <View>
-          <Text>{city}</Text>
-          <Text>Temperatura: {weather.temp_c}°C</Text>
-          <Text>Wilgotność: {weather.humidity}%</Text>
-          <Text>Wiatr: {weather.wind_kph} km/h</Text>
-          <Text>Opis: {weather.condition.text}</Text>
+    <ScrollView className="p-4 bg-[#000] h-full pt-20">
+      <Text className="text-white text-3xl font-bold mb-10 text-center">
+        Pogoda
+      </Text>
+      <View className="flex flex-row flex-wrap justify-between gap-4">
+        <View className="flex-row justify-between items-center p-2 rounded-xl w-full bg-[#222]">
+          <TextInput
+            className="text-white p-2"
+            placeholder="Wpisz miasto..."
+            value={city}
+            onChangeText={setCity}
+          />
+          <Button
+            color="white"
+            title="Szukaj"
+            onPress={() => fetchWeather(city)}
+          />
         </View>
-      )}
 
-      {forecast.length > 0 && (
-        <View>
-          <Text>Prognoza na 7 dni:</Text>
-          {forecast.map((day) => (
-            <Text key={day.date}>
-              {day.date}: {day.day.avgtemp_c}°C, {day.day.condition.text}
+        {weather && (
+          <View className="bg-[#222] w-full rounded-xl">
+            <Text className="text-[#fff] text-center text-3xl font-semibold p-5">
+              {city}
+            </Text>
+            <View className="self-center h-[1px] bg-[#fff] w-full" />
+            <View className="p-5 gap-5">
+              <View className="">
+                <View className="flex-row items-center justify-center">
+                  <Text className="text-[#fff] text-center text-xl font-medium">
+                    Temperatura
+                  </Text>
+                  <Text className="font-semibold text-center text-3xl text-[#fff]">
+                    {weather.temp_c}°C
+                  </Text>
+                </View>
+
+                <View className="flex-row items-center justify-center">
+                  <Text className="text-[#fff] text-center text-xl font-medium">
+                    Wilgotność
+                  </Text>
+                  <Text className="font-semibold text-center text-3xl text-[#fff]">
+                    {weather.humidity}%
+                  </Text>
+                </View>
+
+                <View className="flex-row items-center justify-center">
+                  <Text className="text-[#fff] text-center text-xl font-medium">
+                    Wiatr
+                  </Text>
+                  <Text className="font-semibold text-center text-3xl text-[#fff]">
+                    {weather.wind_kph} km/h
+                  </Text>
+                </View>
+              </View>
+              <View className="self-center h-[1px] bg-[#fff] w-full" />
+              <Text className="font-semibold text-center text-3xl text-[#fff]">
+                {weather.condition.text}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {forecast.length > 0 && (
+          <View className="bg-[#222] rounded-xl p-4 w-full">
+            <Text className="text-white">Prognoza pogody:</Text>
+            {forecast.map((day) => (
+              <Text key={day.date} className="text-white">
+                {day.date}: {day.day.avgtemp_c}°C, {day.day.condition.text}
+              </Text>
+            ))}
+          </View>
+        )}
+
+        <View className="bg-[#222] rounded-xl p-4 w-full">
+          <Text className="text-white">Historia:</Text>
+          {searchHistory.map((item, index) => (
+            <Text
+              key={index}
+              onPress={() => fetchWeather(item)}
+              className="text-white"
+            >
+              {item}
             </Text>
           ))}
         </View>
-      )}
-
-      <View>
-        <Text>Historia wyszukiwań:</Text>
-        {searchHistory.map((item, index) => (
-          <Text key={index} onPress={() => fetchWeather(item)}>
-            {item}
-          </Text>
-        ))}
       </View>
     </ScrollView>
   );
