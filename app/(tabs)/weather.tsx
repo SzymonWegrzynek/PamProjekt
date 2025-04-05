@@ -98,7 +98,7 @@ export default function WeatherApp() {
             </Text>
             <View className="self-center h-[1px] bg-[#fff] w-full" />
             <View className="p-5 gap-5">
-              <View className="">
+              <View>
                 <View className="flex-row items-center justify-center">
                   <Text className="text-[#fff] text-center text-xl font-medium">
                     Temperatura
@@ -136,17 +136,26 @@ export default function WeatherApp() {
 
         {forecast.length > 0 && (
           <View className="bg-[#222] rounded-xl p-4 w-full">
-            <Text className="text-white">Prognoza pogody:</Text>
-            {forecast.map((day) => (
-              <Text key={day.date} className="text-white">
-                {day.date}: {day.day.avgtemp_c}°C, {day.day.condition.text}
-              </Text>
-            ))}
+            <Text className="text-white font-bold text-xl mb-2">
+              Prognoza pogody:
+            </Text>
+            {forecast.map((day) => {
+              const weekday = new Intl.DateTimeFormat("pl-PL", {
+                weekday: "long",
+              }).format(new Date(day.date));
+
+              return (
+                <Text key={day.date} className="text-white">
+                  {weekday.charAt(0).toUpperCase() + weekday.slice(1)}:{" "}
+                  {day.day.avgtemp_c}°C, {day.day.condition.text}
+                </Text>
+              );
+            })}
           </View>
         )}
 
         <View className="bg-[#222] rounded-xl p-4 w-full">
-          <Text className="text-white">Historia:</Text>
+          <Text className="text-white font-bold text-xl mb-2">Historia:</Text>
           {searchHistory.map((item, index) => (
             <Text
               key={index}
