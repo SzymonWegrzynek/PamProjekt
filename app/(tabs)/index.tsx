@@ -2,9 +2,13 @@ import { Text, View } from "react-native";
 
 export default function Index() {
   return (
-    <View className="flex-1 items-center justify-center bg-white ">
-      <Text className="text-4xl text-primary font-bold mb-2">Witamy!</Text>
-      <Text className="text-xl text-center">Zapraszamy do zapoznania się z naszym projektem zaliczeniowym na PAM</Text>
+    <View className="p-4 bg-[#000] h-full pt-20">
+      <Text className="text-white text-3xl font-bold text-center">Witamy!</Text>
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-white text-xl font-medium">
+          Zapraszamy do zapoznania się z naszym projektem zaliczeniowym na PAM
+        </Text>
+      </View>
     </View>
   );
 }

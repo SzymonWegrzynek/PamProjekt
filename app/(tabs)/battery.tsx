@@ -1,62 +1,53 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text } from "react-native";
 import { useBatteryLevel, useBatteryState, BatteryState } from "expo-battery";
 
 const BatteryStatus = () => {
   const batteryLevel = useBatteryLevel();
   const batteryState = useBatteryState();
 
-  const getBatteryStatusText = () => {
-    if (batteryLevel === null || batteryState === null)
-      return "Pobieranie danych...";
-
+  const getBatteryStatus = () => {
+    if (batteryLevel === null || batteryState === null) return "Wczytywanie";
     if (batteryLevel >= 0.99) return "Pełna bateria";
     if (batteryState === BatteryState.CHARGING) return "Ładowanie";
-    return "Rozładowywanie";
+    return "Wyładowywanie";
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Ładowanie":
-        return "#2dc653";
-      case "Rozładowywanie":
-        return "red";
-      case "Pełna bateria":
-        return "#2dc653";
-      default:
-        return "#fffcf2";
-    }
-  };
-
-  const batteryStatusText = getBatteryStatusText();
+  const batteryStatus = getBatteryStatus();
 
   return (
-    <>
-      <View>
-        <Text className="text-center text-black font-bold text-4xl mt-20 font-lexend">
-          Bateria
-        </Text>
-      </View>
-      <View className="flex flex-row justify-center gap-2 mt-5">
-        <View className="flex flex-col bg-[#0a0908] w-[30%] rounded-xl h-24 self-center py-2">
-          <Text className="text-[#fffcf2] text-center">Poziom baterii</Text>
-          <Text className="font-bold text-center text-[#fffcf2] text-5xl mt-3">
+    <View className="p-4 bg-[#000] h-full pt-20">
+      <Text className="text-white text-3xl font-bold mb-10 text-center">
+        Bateria
+      </Text>
+      <View className="flex flex-row flex-wrap justify-between gap-4">
+        <View className="bg-[#222] rounded-xl p-4 w-[36%]">
+          <Text className="text-white text-lg">Poziom baterii</Text>
+          <Text className="text-white text-2xl font-bold text-center mt-1">
             {batteryLevel !== null
-              ? `${(batteryLevel * 100).toFixed(0)}%`
-              : "Ładowanie..."}
+              ? `${(batteryLevel * 100).toFixed()}%`
+              : "?%"}
           </Text>
         </View>
-        <View className="flex flex-col bg-[#0a0908] w-[60%] rounded-xl h-24 self-center py-2">
-          <Text className="ml-2 text-[#fffcf2]">Stan baterii</Text>
+
+        <View className="bg-[#222] rounded-xl p-4 w-[60%]">
+          <Text className="text-white text-lg">Stan baterii</Text>
           <Text
-            className="font-bold ml-2 text-4xl mt-3"
-            style={{ color: getStatusColor(batteryStatusText) }}
+            className={`text-2xl font-bold mt-1 ${
+              batteryStatus === "Ładowanie"
+                ? "text-green-500"
+                : batteryStatus === "Wyładowywanie"
+                ? "text-red-500"
+                : batteryStatus === "Pełna bateria"
+                ? "text-green-500"
+                : "text-white"
+            }`}
           >
-            {batteryStatusText}
+            {batteryStatus}
           </Text>
         </View>
       </View>
-    </>
+    </View>
   );
 };
 

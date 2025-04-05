@@ -4,21 +4,30 @@ import { Ionicons, Feather } from "@expo/vector-icons";
 
 const Layout = () => {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#fff",
+        tabBarInactiveTintColor: "#8e8e8e",
+        tabBarStyle: {
+          backgroundColor: "#000",
+          borderTopColor: "transparent",
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
-        options={{ 
-          title: "Główna", 
+        options={{
+          title: "Główna",
           headerShown: false,
           tabBarIcon: ({ size, color }) => (
-            <Feather name="home" size={size} color={color} /> 
+            <Feather name="home" size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="battery"
-        options={{ 
-          title: "Bateria", 
+        options={{
+          title: "Bateria",
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
@@ -31,8 +40,8 @@ const Layout = () => {
       />
       <Tabs.Screen
         name="network"
-        options={{ 
-          title: "Sieć", 
+        options={{
+          title: "Sieć",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Feather name="wifi" size={size} color={color} />
@@ -41,11 +50,15 @@ const Layout = () => {
       />
       <Tabs.Screen
         name="onas"
-        options={{ 
-          title: "O nas", 
+        options={{
+          title: "O nas",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-outline" size={size} color={color} />
+            <Ionicons
+              name="information-circle-outline"
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
