@@ -24,7 +24,7 @@ const BatteryStatus = () => {
 
   const saveLog = async (entry: string) => {
     const currentLogs = await getCurrentLogs();
-    const updated = [entry, ...currentLogs];
+    const updated = [entry, ...currentLogs].slice(0, 10);
     await AsyncStorage.setItem("batteryLogs", JSON.stringify(updated));
     setLogs(updated);
   };
@@ -54,7 +54,23 @@ const BatteryStatus = () => {
   }, []);
 
   return (
-    <View className="p-4 bg-[#000] h-full pt-20">
+    <ScrollView className="p-4 bg-[#000] h-full pt-20">
+      {batteryLevel !== null && batteryLevel < 0.2 && (
+        <View className="bg-red-700 mb-4 p-3 rounded-xl">
+          <Text className="text-white text-center font-bold">
+            Bateria jest bliska rozładowania
+          </Text>
+        </View>
+      )}
+
+      {batteryLevel !== null && batteryLevel >= 0.9 && (
+        <View className="bg-green-700 mb-4 p-3 rounded-xl">
+          <Text className="text-white text-center font-bold">
+            Bateria prawie pełna
+          </Text>
+        </View>
+      )}
+
       <Text className="text-white text-3xl font-bold mb-10 text-center">
         Bateria
       </Text>
@@ -84,17 +100,17 @@ const BatteryStatus = () => {
             {batteryStatus}
           </Text>
         </View>
-
-        <View className="bg-[#222] rounded-xl p-4 w-full">
-          <Text className="text-white text-lg">Historia ładowania</Text>
-          {logs.map((log, index) => (
-            <Text key={index} className="text-white text-lg font-medium mt-1">
-              {log}
-            </Text>
-          ))}
-        </View>
       </View>
-    </View>
+
+      <View className="bg-[#222] rounded-xl p-4 w-full mt-6">
+        <Text className="text-white text-lg">Historia ładowania</Text>
+        {logs.map((log, index) => (
+          <Text key={index} className="text-white text-sm mt-1">
+            {log}
+          </Text>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
