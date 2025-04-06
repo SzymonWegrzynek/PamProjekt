@@ -1,6 +1,6 @@
-import React from "react";
 import { Tabs } from "expo-router";
 import { Ionicons, Feather } from "@expo/vector-icons";
+import { ICONS } from "@/constants/icons";
 
 const Layout = () => {
   return (
@@ -20,7 +20,7 @@ const Layout = () => {
           title: "Główna",
           headerShown: false,
           tabBarIcon: ({ size, color }) => (
-            <Feather name="home" size={size} color={color} />
+            <Feather name={ICONS.home} size={size} color={color} />
           ),
         }}
       />
@@ -31,7 +31,7 @@ const Layout = () => {
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => (
             <Ionicons
-              name={focused ? "battery-full" : "battery-half"}
+              name={focused ? ICONS.batteryFull : ICONS.batteryHalf}
               size={size}
               color={color}
             />
@@ -44,7 +44,7 @@ const Layout = () => {
           title: "Sieć",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Feather name="wifi" size={size} color={color} />
+            <Feather name={ICONS.wifi} size={size} color={color} />
           ),
         }}
       />
@@ -54,7 +54,7 @@ const Layout = () => {
           title: "Pogoda",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="sunny" size={size} color={color} />
+            <Ionicons name={ICONS.sunny} size={size} color={color} />
           ),
         }}
       />
@@ -64,11 +64,7 @@ const Layout = () => {
           title: "O nas",
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="information-circle-outline"
-              size={size}
-              color={color}
-            />
+            <Ionicons name={ICONS.info} size={size} color={color} />
           ),
         }}
       />

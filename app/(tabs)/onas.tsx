@@ -4,10 +4,8 @@ import { Link } from "expo-router";
 
 const onas = () => {
   return (
-    <View className="flex-1 p-4 bg-[#000] pt-20">
-      <Text className="text-white text-3xl font-bold mb-10 text-center">
-        O nas
-      </Text>
+    <View className="flex-1 bg-[#000] pt-20">
+      <Text className="text-white text-3xl font-bold text-center">O nas</Text>
       <View className="flex-1 justify-center items-center gap-2">
         <Link
           className="text-white text-2xl font-medium"

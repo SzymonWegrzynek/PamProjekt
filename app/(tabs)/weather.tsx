@@ -1,69 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import SearchBar from "@/components/SearchBar";
+import { WeatherData, ForecastDay } from "@/types/weather";
+import useFetch from "@/services/useFetch";
+import { fetchWeather } from "@/services/weatherApi";
 
-const API_KEY = "6ca3797837f94861847213336250404";
-
-type WeatherData = {
-  temp_c: number;
-  wind_kph: number;
-  humidity: number;
-  condition: {
-    text: string;
-  };
-};
-
-type ForecastDay = {
-  date: string;
-  day: {
-    avgtemp_c: number;
-    condition: {
-      text: string;
-    };
-  };
-};
-
-export default function WeatherApp() {
+const Weather = () => {
   const [city, setCity] = useState<string>("");
-  const [weather, setWeather] = useState<WeatherData | null>(null);
-  const [forecast, setForecast] = useState<ForecastDay[]>([]);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
-  const fetchWeather = async (cityName: string) => {
-    try {
-      const response = await axios.get(
-        `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${cityName}&days=7&aqi=no&alerts=no&lang=pl`
-      );
+  const { data, loading, error, refetch } = useFetch(
+    () => fetchWeather(city),
+    false
+  );
 
-      setWeather(response.data.current as WeatherData);
-      setForecast(response.data.forecast.forecastday as ForecastDay[]);
-      saveSearch(cityName);
-    } catch (error) {
-      console.warn("Błąd podczas pobierania pogody:", error);
-    }
+  const {
+    weather,
+    forecast,
+  }: { weather: WeatherData | null; forecast: ForecastDay[] } = data || {
+    weather: null,
+    forecast: [],
   };
 
-  const saveSearch = async (cityName: string) => {
+  const getWeatherHistory = async () => {
+    return await AsyncStorage.getItem("weatherHistory");
+  };
+
+  const saveSearch = async (city: string) => {
     try {
-      const history = JSON.parse(
-        (await AsyncStorage.getItem("weatherHistory")) || "[]"
-      );
+      const history = JSON.parse((await getWeatherHistory()) || "[]");
       const updated = [
-        cityName,
-        ...history.filter((c: string) => c !== cityName),
+        city,
+        ...history.filter((i: string) => i !== city),
       ].slice(0, 5);
       await AsyncStorage.setItem("weatherHistory", JSON.stringify(updated));
       setSearchHistory(updated);
-    } catch (e) {
-      console.warn("Błąd zapisu historii:", e);
+    } catch (error) {
+      console.warn("Błąd zapisu historii:", error);
     }
   };
 
   const loadSearchHistory = async () => {
-    const history = JSON.parse(
-      (await AsyncStorage.getItem("weatherHistory")) || "[]"
-    );
+    const history = JSON.parse((await getWeatherHistory()) || "[]");
     setSearchHistory(history);
   };
 
@@ -76,20 +55,16 @@ export default function WeatherApp() {
       <Text className="text-white text-3xl font-bold mb-10 text-center">
         Pogoda
       </Text>
+
       <View className="flex flex-row flex-wrap justify-between gap-4">
-        <View className="flex-row justify-between items-center p-2 rounded-xl w-full bg-[#222]">
-          <TextInput
-            className="text-white p-2"
-            placeholder="Wpisz miasto..."
-            value={city}
-            onChangeText={setCity}
-          />
-          <Button
-            color="white"
-            title="Szukaj"
-            onPress={() => fetchWeather(city)}
-          />
-        </View>
+        <SearchBar
+          value={city}
+          onChangeText={setCity}
+          onPress={() => {
+            refetch();
+            saveSearch(city);
+          }}
+        />
 
         {weather && (
           <View className="bg-[#222] w-full rounded-xl">
@@ -97,9 +72,9 @@ export default function WeatherApp() {
               {city}
             </Text>
             <View className="self-center h-[1px] bg-[#fff] w-full" />
-            <View className="p-5 gap-5">
-              <View>
-                <View className="flex-row items-center justify-center">
+            <View>
+              <View className="p-5 gap-2">
+                <View className="flex-row items-center justify-between">
                   <Text className="text-[#fff] text-center text-xl font-medium">
                     Temperatura
                   </Text>
@@ -108,7 +83,7 @@ export default function WeatherApp() {
                   </Text>
                 </View>
 
-                <View className="flex-row items-center justify-center">
+                <View className="flex-row items-center justify-between">
                   <Text className="text-[#fff] text-center text-xl font-medium">
                     Wilgotność
                   </Text>
@@ -117,7 +92,7 @@ export default function WeatherApp() {
                   </Text>
                 </View>
 
-                <View className="flex-row items-center justify-center">
+                <View className="flex-row items-center justify-between">
                   <Text className="text-[#fff] text-center text-xl font-medium">
                     Wiatr
                   </Text>
@@ -126,26 +101,34 @@ export default function WeatherApp() {
                   </Text>
                 </View>
               </View>
+
               <View className="self-center h-[1px] bg-[#fff] w-full" />
-              <Text className="font-semibold text-center text-3xl text-[#fff]">
-                {weather.condition.text}
-              </Text>
+
+              <View className="flex-row items-center justify-between p-5">
+                <Text className="text-[#fff] text-center text-xl font-medium">
+                  Opis
+                </Text>
+                <Text className="font-semibold text-center text-3xl text-[#fff]">
+                  {weather.condition.text}
+                </Text>
+              </View>
             </View>
           </View>
         )}
 
         {forecast.length > 0 && (
           <View className="bg-[#222] rounded-xl p-4 w-full">
-            <Text className="text-white font-bold text-xl mb-2">
-              Prognoza pogody:
-            </Text>
+            <Text className="text-white text-lg">Prognoza pogody:</Text>
             {forecast.map((day) => {
               const weekday = new Intl.DateTimeFormat("pl-PL", {
                 weekday: "long",
               }).format(new Date(day.date));
 
               return (
-                <Text key={day.date} className="text-white">
+                <Text
+                  key={day.date}
+                  className="text-white text-lg mt-1 font-medium"
+                >
                   {weekday.charAt(0).toUpperCase() + weekday.slice(1)}:{" "}
                   {day.day.avgtemp_c}°C, {day.day.condition.text}
                 </Text>
@@ -154,19 +137,24 @@ export default function WeatherApp() {
           </View>
         )}
 
-        <View className="bg-[#222] rounded-xl p-4 w-full">
-          <Text className="text-white font-bold text-xl mb-2">Historia:</Text>
+        <View className="bg-[#222] rounded-xl p-4 w-full flex-row flex-wrap">
+          <Text className="text-white text-lg mb-1">
+            Ostatnio wyszukiwane:{" "}
+          </Text>
           {searchHistory.map((item, index) => (
             <Text
               key={index}
               onPress={() => fetchWeather(item)}
-              className="text-white"
+              className="text-white text-lg"
             >
-              {item}
+              {item.trim()}
+              {index < searchHistory.length - 1 ? ", " : ""}
             </Text>
           ))}
         </View>
       </View>
     </ScrollView>
   );
-}
+};
+
+export default Weather;

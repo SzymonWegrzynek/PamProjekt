@@ -38,7 +38,7 @@ const NetworkInfo = () => {
           <Text className="text-white text-lg">Typ połączenia:</Text>
           <Text className="text-white text-2xl font-bold mt-1">
             {network ? (
-              <Text className="text-blue-500">{network?.type}</Text>
+              <Text className="text-blue-700">{network?.type}</Text>
             ) : (
               "Nieznany"
             )}
@@ -49,9 +49,9 @@ const NetworkInfo = () => {
           <Text className="text-white text-lg">Połączony:</Text>
           <Text className="text-white text-2xl font-bold mt-1">
             {network?.isConnected ? (
-              <Text className="text-green-500">Tak</Text>
+              <Text className="text-green-700">Tak</Text>
             ) : (
-              <Text className="text-red-500">Nie</Text>
+              <Text className="text-red-700">Nie</Text>
             )}
           </Text>
         </View>

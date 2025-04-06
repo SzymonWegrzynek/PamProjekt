@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ScrollView, View, Text } from "react-native";
+import { View, Text } from "react-native";
 import { useBatteryLevel, useBatteryState, BatteryState } from "expo-battery";
 import * as Battery from "expo-battery";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const BatteryStatus = () => {
+  const [logs, setLogs] = useState<string[]>([]);
+
   const batteryLevel = useBatteryLevel();
   const batteryState = useBatteryState();
-  const [logs, setLogs] = useState<string[]>([]);
 
   const getBatteryStatus = () => {
     if (batteryLevel === null || batteryState === null) return "Wczytywanie";
@@ -54,7 +55,11 @@ const BatteryStatus = () => {
   }, []);
 
   return (
-    <ScrollView className="p-4 bg-[#000] h-full pt-20">
+    <View className="p-4 bg-[#000] h-full pt-20">
+      <Text className="text-white text-3xl font-bold mb-10 text-center">
+        Bateria
+      </Text>
+
       {batteryLevel !== null && batteryLevel < 0.2 && (
         <View className="bg-red-700 mb-4 p-3 rounded-xl">
           <Text className="text-white text-center font-bold">
@@ -71,9 +76,6 @@ const BatteryStatus = () => {
         </View>
       )}
 
-      <Text className="text-white text-3xl font-bold mb-10 text-center">
-        Bateria
-      </Text>
       <View className="flex flex-row flex-wrap justify-between gap-4">
         <View className="bg-[#222] rounded-xl p-4 w-[36%]">
           <Text className="text-white text-lg">Poziom baterii</Text>
@@ -89,11 +91,11 @@ const BatteryStatus = () => {
           <Text
             className={`text-2xl font-bold mt-1 ${
               batteryStatus === "Ładowanie"
-                ? "text-green-500"
+                ? "text-green-700"
                 : batteryStatus === "Wyładowywanie"
-                ? "text-red-500"
+                ? "text-red-700"
                 : batteryStatus === "Bateria naładowana"
-                ? "text-green-500"
+                ? "text-green-700"
                 : "text-white"
             }`}
           >
@@ -102,7 +104,7 @@ const BatteryStatus = () => {
         </View>
       </View>
 
-      <View className="bg-[#222] rounded-xl p-4 w-full mt-6">
+      <View className="bg-[#222] rounded-xl p-4 w-full mt-4">
         <Text className="text-white text-lg">Historia ładowania</Text>
         {logs.map((log, index) => (
           <Text key={index} className="text-white text-sm mt-1">
@@ -110,7 +112,7 @@ const BatteryStatus = () => {
           </Text>
         ))}
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
