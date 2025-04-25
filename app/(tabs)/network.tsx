@@ -1,21 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import * as Network from "expo-network";
+import { Platform } from "react-native";
 
 const NetworkInfo = () => {
   const [ip, setIp] = useState<string | null>(null);
   const [network, setNetwork] = useState<Network.NetworkState | null>(null);
   const [airplaneMode, setAirplaneMode] = useState<boolean | null>(null);
+  const [publicIp, setPublicIp] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const ip = await Network.getIpAddressAsync();
-      const netState = await Network.getNetworkStateAsync();
-      const airplaneMode = await Network.isAirplaneModeEnabledAsync();
+      try {
+        const ip = await Network.getIpAddressAsync();
 
-      setIp(ip);
-      setNetwork(netState);
-      setAirplaneMode(airplaneMode);
+        const publicIpResponse = await fetch(
+          "https://api.ipify.org?format=json"
+        ).then((response) => response.json());
+        setPublicIp(publicIpResponse.ip);
+
+        const netState = await Network.getNetworkStateAsync();
+
+        let airplaneMode = null;
+        if (Platform.OS === "android") {
+          airplaneMode = await Network.isAirplaneModeEnabledAsync();
+        }
+
+        setIp(ip);
+        setNetwork(netState);
+        setAirplaneMode(airplaneMode);
+      } catch (error) {
+        console.error("Błąd podczas pobierania:", error);
+      }
     };
 
     fetchAllData();
@@ -31,6 +47,13 @@ const NetworkInfo = () => {
           <Text className="text-white text-lg">Adres IP:</Text>
           <Text className="text-white text-2xl font-bold mt-1">
             {ip ?? "Wczytywanie"}
+          </Text>
+        </View>
+
+        <View className="bg-[#222] rounded-xl p-4 w-[53%]">
+          <Text className="text-white text-lg">Publiczne IP:</Text>
+          <Text className="text-white text-2xl font-bold mt-1">
+            {publicIp ?? "Wczytywanie"}
           </Text>
         </View>
 
