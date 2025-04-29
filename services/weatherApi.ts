@@ -1,6 +1,5 @@
 import axios from "axios";
 import { WeatherData, ForecastDay } from "@/types/weather";
-import Constants from "expo-constants";
 
 export const WEATHER_CONFIG = {
   BASE_URL: "https://api.weatherapi.com",

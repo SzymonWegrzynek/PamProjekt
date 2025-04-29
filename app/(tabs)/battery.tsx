@@ -61,8 +61,8 @@ const BatteryStatus = () => {
       </Text>
 
       {batteryLevel !== null && batteryLevel < 0.2 && (
-        <View className="bg-red-700 mb-4 p-3 rounded-xl">
-          <Text className="text-white text-center font-bold">
+        <View className="bg-red-700 mb-4 p-3 rounded-xl ">
+          <Text className="text-white text-center font-semibold text-base">
             Bateria jest bliska rozładowania
           </Text>
         </View>
@@ -70,14 +70,14 @@ const BatteryStatus = () => {
 
       {batteryLevel !== null && batteryLevel >= 0.9 && (
         <View className="bg-green-700 mb-4 p-3 rounded-xl">
-          <Text className="text-white text-center font-bold">
+          <Text className="text-white text-center font-semibold text-base">
             Bateria prawie pełna
           </Text>
         </View>
       )}
 
       <View className="flex flex-row flex-wrap justify-between gap-4">
-        <View className="bg-[#222] rounded-xl p-4 w-[36%]">
+        <View className="bg-[#222] rounded-xl p-4 w-full">
           <Text className="text-white text-lg">Poziom baterii</Text>
           <Text className="text-white text-2xl font-bold text-center mt-1">
             {batteryLevel !== null
@@ -86,7 +86,7 @@ const BatteryStatus = () => {
           </Text>
         </View>
 
-        <View className="bg-[#222] rounded-xl p-4 w-[60%]">
+        <View className="bg-[#222] rounded-xl p-4 w-full">
           <Text className="text-white text-lg">Stan baterii</Text>
           <Text
             className={`text-2xl font-bold mt-1 ${
@@ -107,7 +107,7 @@ const BatteryStatus = () => {
       <View className="bg-[#222] rounded-xl p-4 w-full mt-4">
         <Text className="text-white text-lg">Historia ładowania</Text>
         {logs.map((log, index) => (
-          <Text key={index} className="text-white text-sm mt-1">
+          <Text key={index} className="text-white text-base font-semibold mt-1">
             {log}
           </Text>
         ))}

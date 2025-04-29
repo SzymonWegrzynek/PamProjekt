@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SearchBar from "@/components/SearchBar";
 import { WeatherData, ForecastDay } from "@/types/weather";
 import useFetch from "@/services/useFetch";
 import { fetchWeather } from "@/services/weatherApi";
@@ -50,6 +49,10 @@ const Weather = () => {
     loadSearchHistory();
   }, []);
 
+  const searchHistoryFiltered = Array.from(
+    new Set([city, ...searchHistory])
+  ).filter((item) => item.trim() !== "");
+
   return (
     <ScrollView className="p-4 bg-[#000] h-full pt-20">
       <Text className="text-white text-3xl font-bold mb-10 text-center">
@@ -57,46 +60,48 @@ const Weather = () => {
       </Text>
 
       <View className="flex flex-row flex-wrap justify-between gap-4">
-        <SearchBar
+        <TextInput
           value={city}
           onChangeText={setCity}
-          onPress={() => {
+          onSubmitEditing={() => {
             refetch();
             saveSearch(city);
           }}
+          className="bg-[#222] text-white rounded-xl w-full text-xl px-5 py-3 leading-[22px]"
+          placeholder="Wpisz miasto..."
         />
 
         {weather && (
           <View className="bg-[#222] w-full rounded-xl">
-            <Text className="text-[#fff] text-center text-3xl font-semibold p-5">
+            <Text className="text-[#fff] text-center text-2xl font-semibold p-5">
               {city}
             </Text>
             <View className="self-center h-[1px] bg-[#fff] w-full" />
             <View>
               <View className="p-5 gap-2">
                 <View className="flex-row items-center justify-between">
-                  <Text className="text-[#fff] text-center text-xl font-medium">
+                  <Text className="text-[#fff] text-center text-lg font-medium">
                     Temperatura
                   </Text>
-                  <Text className="font-semibold text-center text-3xl text-[#fff]">
+                  <Text className="font-semibold text-center text-2xl text-[#fff]">
                     {weather.temp_c}°C
                   </Text>
                 </View>
 
                 <View className="flex-row items-center justify-between">
-                  <Text className="text-[#fff] text-center text-xl font-medium">
+                  <Text className="text-[#fff] text-center text-lg font-medium">
                     Wilgotność
                   </Text>
-                  <Text className="font-semibold text-center text-3xl text-[#fff]">
+                  <Text className="font-semibold text-center text-2xl text-[#fff]">
                     {weather.humidity}%
                   </Text>
                 </View>
 
                 <View className="flex-row items-center justify-between">
-                  <Text className="text-[#fff] text-center text-xl font-medium">
+                  <Text className="text-[#fff] text-center text-lg font-medium">
                     Wiatr
                   </Text>
-                  <Text className="font-semibold text-center text-3xl text-[#fff]">
+                  <Text className="font-semibold text-center text-2xl text-[#fff]">
                     {weather.wind_kph} km/h
                   </Text>
                 </View>
@@ -105,10 +110,10 @@ const Weather = () => {
               <View className="self-center h-[1px] bg-[#fff] w-full" />
 
               <View className="flex-row items-center justify-between p-5">
-                <Text className="text-[#fff] text-center text-xl font-medium">
+                <Text className="text-[#fff] text-center text-lg font-medium">
                   Opis
                 </Text>
-                <Text className="font-semibold text-center text-3xl text-[#fff]">
+                <Text className="font-semibold text-right text-2xl text-[#fff]">
                   {weather.condition.text}
                 </Text>
               </View>
@@ -127,7 +132,7 @@ const Weather = () => {
               return (
                 <Text
                   key={day.date}
-                  className="text-white text-lg mt-1 font-medium"
+                  className="text-white text-xl mt-2 font-medium"
                 >
                   {weekday.charAt(0).toUpperCase() + weekday.slice(1)}:{" "}
                   {day.day.avgtemp_c}°C, {day.day.condition.text}
@@ -138,17 +143,19 @@ const Weather = () => {
         )}
 
         <View className="bg-[#222] rounded-xl p-4 w-full flex-row flex-wrap">
-          <Text className="text-white text-lg mb-1">
-            Ostatnio wyszukiwane:{" "}
-          </Text>
-          {searchHistory.map((item, index) => (
+          <Text className="text-white text-lg">Ostatnio wyszukiwane: </Text>
+          {searchHistoryFiltered.map((item, index) => (
             <Text
               key={index}
-              onPress={() => fetchWeather(item)}
-              className="text-white text-lg"
+              onPress={() => {
+                refetch();
+                setCity(item);
+                saveSearch(item);
+              }}
+              className="text-white text-xl underline font-medium"
             >
               {item.trim()}
-              {index < searchHistory.length - 1 ? ", " : ""}
+              {index < searchHistoryFiltered.length - 1 ? ", " : ""}
             </Text>
           ))}
         </View>
