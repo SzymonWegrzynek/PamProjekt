@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TextInput } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WeatherData, ForecastDay } from "@/types/weather";
+import SearchBar from "@/components/SearchBar";
 import useFetch from "@/services/useFetch";
 import { fetchWeather } from "@/services/weatherApi";
 
@@ -60,15 +61,13 @@ const Weather = () => {
       </Text>
 
       <View className="flex flex-row flex-wrap justify-between gap-4">
-        <TextInput
+        <SearchBar
           value={city}
           onChangeText={setCity}
-          onSubmitEditing={() => {
+          onPress={() => {
             refetch();
             saveSearch(city);
           }}
-          className="bg-[#222] text-white rounded-xl w-full text-xl px-5 py-3 leading-[22px]"
-          placeholder="Wpisz miasto..."
         />
 
         {weather && (

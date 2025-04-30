@@ -3,6 +3,15 @@ import { View, Text } from "react-native";
 import { useBatteryLevel, useBatteryState, BatteryState } from "expo-battery";
 import * as Battery from "expo-battery";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const BatteryStatus = () => {
   const [logs, setLogs] = useState<string[]>([]);
@@ -35,8 +44,27 @@ const BatteryStatus = () => {
     setLogs(saved);
   };
 
+  const sendNotification = async (title: string, body: string) => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        sound: true,
+      },
+      trigger: null,
+    });
+  };
+
+  const requestNotificationPermissions = async () => {
+    const { status } = await Notifications.requestPermissionsAsync();
+    if (status !== "granted") {
+      console.warn("Brak uprawnień do wysyłania powiadomień");
+    }
+  };
+
   useEffect(() => {
     loadLogs();
+    requestNotificationPermissions();
 
     const chargingListener = Battery.addBatteryStateListener(
       (event: Battery.BatteryStateEvent) => {
@@ -48,6 +76,7 @@ const BatteryStatus = () => {
 
         const logEntry = `${new Date().toLocaleString()} - ${status}`;
         saveLog(logEntry);
+        sendNotification("Stan baterii", status);
       }
     );
 
